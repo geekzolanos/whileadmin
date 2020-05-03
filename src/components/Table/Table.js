@@ -14,7 +14,8 @@ const useStyles = makeStyles(styles);
 
 export default function CustomTable(props) {
   const classes = useStyles();
-  const { tableHead, tableData, tableHeaderColor } = props;
+  const { tableHead, tableData, tableHeaderColor, emptyText } = props;
+  const empty = emptyText || "";
   return (
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>
@@ -46,7 +47,7 @@ export default function CustomTable(props) {
                 {prop.map((prop, key) => {
                   return (
                     <TableCell className={classes.tableCell} key={key}>
-                      {prop}
+                      {(prop || empty).toString()}
                     </TableCell>
                   );
                 })}
@@ -74,7 +75,8 @@ CustomTable.propTypes = {
     "gray"
   ]),
   tableHead: PropTypes.arrayOf(PropTypes.string),
-  tableData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+  tableData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.any)),
   hover: PropTypes.bool,
-  onSelected: PropTypes.func
+  onSelected: PropTypes.func,
+  emptyText: PropTypes.string
 };
