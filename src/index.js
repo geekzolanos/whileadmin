@@ -17,9 +17,11 @@
 */
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
+import CircularProgress from "@material-ui/core/CircularProgress"
 import config from "config/firebase";
 import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { AuthCheck } from 'reactfire';
 import { FirebaseAppProvider } from "reactfire";
 
 // core components
@@ -32,11 +34,17 @@ const hist = createBrowserHistory();
 
 ReactDOM.render(
   <FirebaseAppProvider firebaseConfig={config}>
-    <Suspense fallback={<h1>Please wait...</h1>}>
+    <Suspense fallback={<CircularProgress />}>
       <Router history={hist}>
         <Switch>
-          <Route path="/admin" component={Admin} />
+          <Route path="/admin">
+            <AuthCheck fallback={<Redirect to="/login" />}>
+              <Admin />
+            </AuthCheck>
+          </Route>
+
           <Route path="/login" component={Login} />
+
           <Redirect from="/" to="/admin/dashboard" />
         </Switch>
       </Router>
