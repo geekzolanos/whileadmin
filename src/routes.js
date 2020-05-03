@@ -25,7 +25,7 @@ import Notifications from "@material-ui/icons/Notifications";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
-import TableList from "views/TableList/TableList.js";
+import MyCourses from "views/MyCourses/MyCourses.js";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import Maps from "views/Maps/Maps.js";
@@ -50,7 +50,7 @@ const dashboardRoutes = [
     path: "/my-courses",
     name: "Mis cursos",
     icon: "content_paste",
-    component: TableList,
+    component: MyCourses,
     layout: "/admin"
   },
   {

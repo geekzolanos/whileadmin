@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useUser, useFirestore } from "reactfire";
-import { getCoursesByUser } from "api";
+import React from "react";
 import PropTypes from "prop-types";
+import { useRouteMatch, useHistory } from "react-router-dom";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+
 // core components
 import Table from "../Table/Table.js";
 import Card from "../Card/Card.js";
@@ -43,38 +43,41 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function MyCoursesList({ onSelected }) {
-  const user = useUser();
-  const firestore = useFirestore();
-  const [courses, setCourses] = useState([]);
-
+export default function CoursesList({ courses }) {
   const classes = useStyles();
+  const match = useRouteMatch();
+  const history = useHistory();
 
-  useEffect(() => {
-    getCoursesByUser(firestore, user).then(setCourses);
-  }, []);
+  const handleSelected = key =>
+    history.push(`${match.path}/${courses[key].id}`);
 
   return (
-    <Card>
-      <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>Listado de cursos</h4>
-        <p className={classes.cardCategoryWhite}>
-          {courses.length} Curso(s) encontrados
-        </p>
-      </CardHeader>
-      <CardBody>
-        <Table
-          hover
-          tableHeaderColor="primary"
-          onSelected={onSelected}
-          tableHead={["Titulo", "Duration (Min)", "Estudiantes"]}
-          tableData={courses.map(c => [c.name, c.duration, c.students.length])}
-        />
-      </CardBody>
-    </Card>
+    courses && (
+      <Card>
+        <CardHeader color="primary">
+          <h4 className={classes.cardTitleWhite}>Listado de cursos</h4>
+          <p className={classes.cardCategoryWhite}>
+            {courses.length} Curso(s) encontrados
+          </p>
+        </CardHeader>
+        <CardBody>
+          <Table
+            hover
+            tableHeaderColor="primary"
+            onSelected={handleSelected}
+            tableHead={["Titulo", "Duration (Min)", "Estudiantes"]}
+            tableData={courses.map(c => [
+              c.name,
+              c.duration,
+              c.students.length
+            ])}
+          />
+        </CardBody>
+      </Card>
+    )
   );
 }
 
-MyCoursesList.propTypes = {
-  onSelected: PropTypes.func
+CoursesList.propTypes = {
+  courses: PropTypes.array
 };
