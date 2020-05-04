@@ -1,4 +1,6 @@
 import { contain } from "intrinsic-scale";
+import React from "react";
+import { TopicTypes } from "config/constants";
 
 function getThumbFromVideo($video, size) {
   const $canvas = document.createElement("canvas");
@@ -33,4 +35,17 @@ function createVideoFromFile(file) {
   });
 }
 
-export { getThumbFromVideo, createVideoFromFile };
+function getTopicTypeText(type, $elem) {
+  $elem = $elem || <td />;
+
+  switch (type) {
+    case TopicTypes.Public:
+      return React.cloneElement($elem, null, ["Publicado"]);
+    case TopicTypes.Draft:
+      return React.cloneElement($elem, { style: { color: "red" } }, [
+        "Borrador"
+      ]);
+  }
+}
+
+export { getThumbFromVideo, createVideoFromFile, getTopicTypeText };
