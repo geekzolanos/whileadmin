@@ -23,6 +23,10 @@ class CourseProvider extends Component {
 
     this.throwError = this.throwError.bind(this);
     this.refreshCourses = this.refreshCourses.bind(this);
+    this.refreshCourse = this.refreshCourse.bind(this);
+    this.refreshTopics = this.refreshTopics.bind(this);
+    this.refreshTopic = this.refreshTopic.bind(this);
+    this.refreshStudents = this.refreshStudents.bind(this);
     this.refreshDetails = this.refreshDetails.bind(this);
     this.refresh = this.refresh.bind(this);
   }
@@ -33,26 +37,73 @@ class CourseProvider extends Component {
     this.props.onError && this.props.onError();
   }
 
-  async refreshCourses() {
+  async refreshStudents() {
+    const { functions } = this.props;
+    const course = this.state.course;
+
+    if (course) {
+      getProfileByStudents(functions, course).then(students =>
+        this.setState({ students })
+      );
+    }
+  }
+
+  async refreshCourses(cb) {
     const { firestore, user } = this.props;
     const courses = await getCoursesByUser(firestore, user);
-    this.setState({ courses }, this._refresh);
+    const ret = typeof cb == "object" ? () => this.refreshForced(cb) : cb;
+    this.setState({ courses }, ret);
+  }
+
+  async refreshCourse(params) {
+    const { courses, course } = this.state;
+
+    if (courses) {
+      const _course = getReqById(courses.docs, course.id);
+      this.setState({ course: _course }, () => this.refreshForced(params));
+    }
+  }
+
+  async refreshTopics(cb) {
+    const { firestore } = this.props;
+    const course = this.state.course;
+    const ret = typeof cb == "object" ? () => this.refreshForced(cb) : cb;
+
+    if (course) {
+      getTopicsByCourse(firestore, course).then(topics =>
+        this.setState({ topics }, ret)
+      );
+    }
+  }
+
+  async refreshTopic() {
+    const { topics, topic } = this.state;
+
+    if (topic) {
+      const _topic = getReqById(topics.docs, topic.id);
+      this.setState({ topic: _topic });
+    }
   }
 
   refreshDetails() {
-    const { firestore, functions } = this.props;
-    const course = this.state.course;
-
-    getTopicsByCourse(firestore, course).then(topics =>
-      this.setState({ topics }, this._refresh)
-    );
-
-    getProfileByStudents(functions, course).then(students =>
-      this.setState({ students })
-    );
+    this.refreshTopics(this._refresh);
+    this.refreshStudents();
   }
 
-  refresh({ courseId, topicId }) {
+  refreshForced({ courses, course, students, topics, topic }) {
+    courses && this.refreshCourses(courses);
+    course && this.refreshCourse(course);
+    topic && this.refreshTopic(topic);
+    topics && this.refreshTopics(topics);
+    students && this.refreshStudents();
+  }
+
+  refresh({ courseId, topicId, force }) {
+    if (force) {
+      this.refreshForced(force);
+      return;
+    }
+
     let payload = { lastReq: { courseId, topicId } };
 
     if (courseId === null)
@@ -71,7 +122,7 @@ class CourseProvider extends Component {
     if (!courses) return;
 
     if (requiresUpdate(course, lastReq.courseId)) {
-      const _course = getReqById(courses, lastReq.courseId);
+      const _course = getReqById(courses.docs, lastReq.courseId);
 
       if (!_course) return this.throwError(ErrStates.CourseNull);
 
@@ -80,7 +131,7 @@ class CourseProvider extends Component {
     }
 
     if (!differTopic && requiresUpdate(topic, lastReq.topicId)) {
-      const _topic = getReqById(topics, lastReq.topicId);
+      const _topic = getReqById(topics.docs, lastReq.topicId);
 
       if (!_topic) return this.throwError(ErrStates.TopicNull);
 
@@ -89,7 +140,7 @@ class CourseProvider extends Component {
   }
 
   componentDidMount() {
-    this.refreshCourses();
+    this.refreshCourses(this._refresh);
   }
 
   componentWillUnmount() {
