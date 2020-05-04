@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import {
   useRouteMatch,
   useHistory,
@@ -20,6 +20,7 @@ import CardHeader from "../Card/CardHeader.js";
 import CardBody from "../Card/CardBody.js";
 import CardFooter from "../Card/CardFooter.js";
 import Snackbar from "../Snackbar/Snackbar";
+import MaterialTable from "material-table";
 
 import CourseForm from "./CourseForm";
 
@@ -32,25 +33,47 @@ const TopicsList = ({ topics, onSelected }) => {
       .toDate()
       .toLocaleString()
   }));
-    <CardHeader color="primary">
-      <h4>Listado de Temas</h4>
-      <p>{topics.length} Temas(s) encontrados</p>
-    </CardHeader>
-    <CardBody>
-      <Table
-        hover
-        tableHeaderColor="primary"
-        onSelected={onSelected}
-        tableHead={["Titulo", "Duration (Min)", "Fecha Creacion"]}
-        tableData={topics.map(c => [
-          c.name,
-          c.length.toString(),
-          c.createdAt.toDate().toLocaleString()
-        ])}
-      />
-    </CardBody>
-  </Card>
-);
+
+  const handleSelect = (_e, item) => onSelected(topics.docs[item.index]);
+
+  return (
+    <Card>
+      <CardHeader color="info">
+        <h4>Listado de Temas</h4>
+        <p>{topics.docs.length} Temas(s) encontrados</p>
+      </CardHeader>
+      <CardBody>
+        <MaterialTable
+          title=""
+          onRowClick={handleSelect}
+          options={{ search: true, sorting: true }}
+          columns={[
+            { title: "Titulo", field: "name" },
+            {
+              title: "Duration (Min)",
+              field: "length",
+              type: "number"
+            },
+            {
+              title: "Estado",
+              field: "type",
+              render: ({ type }) => getTopicTypeText(type)
+            },
+            {
+              title: "Fecha Creacion",
+              field: "createdAt",
+              type: "datetime"
+            }
+          ]}
+          data={data}
+          components={{
+            Container: React.Fragment
+          }}
+        />
+      </CardBody>
+    </Card>
+  );
+};
 
 TopicsList.propTypes = {
   topics: PropTypes.array,
@@ -114,8 +137,7 @@ export default function CourseDashboard({ course, topics, students }) {
   const history = useHistory();
   const [sb, setSb] = useState();
 
-  const handleTopic = key =>
-    history.push(`${match.url}/topic/${topics[key].id}`);
+  const handleTopic = topic => history.push(`${match.url}/topic/${topic.id}`);
 
   const handleSubmit = (data, { setSubmitting }) =>
     course.ref.update(data).then(() => {
