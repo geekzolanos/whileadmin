@@ -117,12 +117,13 @@ export default function CourseDashboard({ course, topics, students }) {
   const handleTopic = key =>
     history.push(`${match.url}/topic/${topics[key].id}`);
 
-  const handleSubmit = useCallback(data => {
-    course.ref.set(data, { merge: true }).then(() => {
+  const handleSubmit = (data, { setSubmitting }) =>
+    course.ref.update(data).then(() => {
+      onUpdate();
+      setSubmitting(false);
       setSb(true);
       setTimeout(() => setSb(false), 4000);
     });
-  }, []);
 
   return (
     <Grid container spacing={4}>
@@ -149,6 +150,7 @@ export default function CourseDashboard({ course, topics, students }) {
 
 CourseDashboard.propTypes = {
   course: PropTypes.any,
-  topics: PropTypes.array,
-  students: PropTypes.array
+  topics: PropTypes.any,
+  students: PropTypes.array,
+  onUpdate: PropTypes.func
 };

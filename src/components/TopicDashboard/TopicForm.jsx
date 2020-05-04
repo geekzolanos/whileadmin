@@ -58,7 +58,8 @@ function TopicForm({ classes, course, topic }) {
 
       // Update meta
       const meta = { thumbUrl, duration: Math.round($video.duration) };
-      await topic.ref.set(meta, { merge: true });
+      await topic.ref.update(meta);
+      onUpdate();
       setVidSuccessOpen(true);
       setUploading(false);
     } catch (e) {
@@ -69,10 +70,11 @@ function TopicForm({ classes, course, topic }) {
 
   const onSubmit = async (data, { setSubmitting }) => {
     try {
-      await topic.ref.set(data, { merge: true });
+      await topic.ref.update(data);
       if (contentDirty) {
         await uploadTopicContent(storage, course, topic, contentFetch());
       }
+      onUpdate();
       setVidSuccessOpen(true);
       setSubmitting(false);
     } catch (e) {
@@ -184,6 +186,7 @@ TopicForm.propTypes = {
   course: PropTypes.any,
   topic: PropTypes.any,
   onSubmit: PropTypes.func,
+  onUpdate: PropTypes.func,
   classes: PropTypes.any
 };
 

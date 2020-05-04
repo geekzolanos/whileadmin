@@ -239,7 +239,7 @@ export default function UserProfile() {
       firestore
         .collection("users")
         .doc(user.uid)
-        .set(data, { merge: true })
+        .update(data)
         .then(() => {
           setSubmitting(false);
           setSb(true);
