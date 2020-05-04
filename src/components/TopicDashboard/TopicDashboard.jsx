@@ -8,7 +8,7 @@ import MetaView from "./MetaView";
 import TopicPlayer from "./TopicPlayer";
 import ContentView from "./ContentView";
 
-function TopicDashboard({ course, topic }) {
+function TopicDashboard({ course, topic, requestPublish }) {
   const meta = { course, topic };
 
   return (
@@ -18,7 +18,7 @@ function TopicDashboard({ course, topic }) {
         <ContentView meta={meta} />
       </Grid>
       <Grid item md={4}>
-        <MetaView topic={topic} />
+        <MetaView topic={topic} requestPublish={requestPublish} />
       </Grid>
     </Grid>
   );
@@ -26,7 +26,8 @@ function TopicDashboard({ course, topic }) {
 
 TopicDashboard.propTypes = {
   course: PropTypes.any,
-  topic: PropTypes.any
+  topic: PropTypes.any,
+  requestPublish: PropTypes.func
 };
 
 export default TopicDashboard;

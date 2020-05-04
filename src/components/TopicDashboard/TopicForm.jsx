@@ -25,7 +25,7 @@ import {
 const getProgress = ({ bytesTransferred, totalBytes }) =>
   (bytesTransferred / totalBytes) * 100;
 
-function TopicForm({ classes, course, topic }) {
+function TopicForm({ classes, course, topic, onUpdate }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);

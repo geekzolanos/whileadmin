@@ -14,10 +14,13 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import Link from "@material-ui/core/Link";
 import Mail from "@material-ui/icons/Mail";
+import Publish from "@material-ui/icons/Publish";
+import { getTopicTypeText } from "utils";
+import { TopicTypes } from "config/constants";
 
 import { useRouteMatch, Link as RouterLink } from "react-router-dom";
 
-function MetaView({ topic }) {
+function MetaView({ topic, requestPublish }) {
   const match = useRouteMatch();
   if (!topic) return <CircularProgress />;
   const data = topic.data();
@@ -48,13 +51,30 @@ function MetaView({ topic }) {
               <TableCell component="th" scope="row">
                 Duracion
               </TableCell>
-              <TableCell align="right">{topic.length}</TableCell>
+              <TableCell align="right">{data.length}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell component="th" scope="row">
+                Estado
+              </TableCell>
+              {getTopicTypeText(data.type, <TableCell align="right" />)}
             </TableRow>
           </TableBody>
         </Table>
       </CardContent>
 
       <CardActions>
+        {data.type === TopicTypes.Draft && (
+          <Button
+            size="small"
+            color="primary"
+            startIcon={<Publish />}
+            style={{ margin: "auto" }}
+            onClick={requestPublish}
+          >
+            Publicar
+          </Button>
+        )}
         <Link
           component={RouterLink}
           to={`${match.url}/edit`}
@@ -72,6 +92,7 @@ function MetaView({ topic }) {
 
 MetaView.propTypes = {
   classes: PropTypes.object,
-  topic: PropTypes.any
+  topic: PropTypes.any,
+  requestPublish: PropTypes.func
 };
 export default MetaView;
