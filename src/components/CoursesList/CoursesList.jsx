@@ -77,5 +77,5 @@ export default function CoursesList({ courses }) {
 }
 
 CoursesList.propTypes = {
-  courses: PropTypes.array
+  courses: PropTypes.any
 };

@@ -11,6 +11,9 @@ const CourseDashboard = ({ course, students, topics, refresh }) => {
     refresh({ courseId: match.params.courseId });
   }, [match.params.courseId]);
 
+  const handleCourseUpdate = () =>
+    refresh({ force: { courses: { course: true } } });
+
   return (
     topics && (
       <Switch>
@@ -19,7 +22,12 @@ const CourseDashboard = ({ course, students, topics, refresh }) => {
         </Route>
 
         <Route>
-          <Dashboard course={course} topics={topics} students={students} />
+          <Dashboard
+            course={course}
+            topics={topics}
+            students={students}
+            onUpdate={handleCourseUpdate}
+          />
         </Route>
       </Switch>
     )
@@ -28,7 +36,7 @@ const CourseDashboard = ({ course, students, topics, refresh }) => {
 
 CourseDashboard.propTypes = {
   course: PropTypes.any,
-  topics: PropTypes.array,
+  topics: PropTypes.any,
   students: PropTypes.array,
   refresh: PropTypes.func
 };

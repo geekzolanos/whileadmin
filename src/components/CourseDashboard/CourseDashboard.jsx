@@ -14,7 +14,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Link from "@material-ui/core/Link";
 import Info from "@material-ui/icons/Info";
 
-import Table from "../Table/Table.js";
 import Card from "../Card/Card.js";
 import CardHeader from "../Card/CardHeader.js";
 import CardBody from "../Card/CardBody.js";
@@ -23,6 +22,7 @@ import Snackbar from "../Snackbar/Snackbar";
 import MaterialTable from "material-table";
 
 import CourseForm from "./CourseForm";
+import { getTopicTypeText } from "utils";
 
 const TopicsList = ({ topics, onSelected }) => {
   const data = topics.docs.map((doc, index) => ({
@@ -92,7 +92,7 @@ const StudentsGrid = ({ students }) => {
   return (
     students && (
       <Card>
-        <CardHeader>
+        <CardHeader color="rose">
           <h4>Estudiantes</h4>
           <p>{students.length} Estudiante(s) inscritos</p>
         </CardHeader>
@@ -132,7 +132,12 @@ StudentsGrid.propTypes = {
   students: PropTypes.array
 };
 
-export default function CourseDashboard({ course, topics, students }) {
+export default function CourseDashboard({
+  course,
+  topics,
+  students,
+  onUpdate
+}) {
   const match = useRouteMatch();
   const history = useHistory();
   const [sb, setSb] = useState();
