@@ -20,6 +20,7 @@ import { useRouteMatch, Link as RouterLink } from "react-router-dom";
 function MetaView({ topic }) {
   const match = useRouteMatch();
   if (!topic) return <CircularProgress />;
+  const data = topic.data();
 
   return (
     <Card variant="outlined">
@@ -28,7 +29,7 @@ function MetaView({ topic }) {
           Informacion
         </Typography>
         <Typography variant="h5" gutterBottom>
-          {topic.name}
+          {data.name}
         </Typography>
         <Typography
           variant="body2"
@@ -36,7 +37,7 @@ function MetaView({ topic }) {
           align="justify"
           style={{ marginBottom: 12 }}
         >
-          {topic.description}
+          {data.description}
         </Typography>
         <Typography variant="overline" gutterBottom>
           Detalles

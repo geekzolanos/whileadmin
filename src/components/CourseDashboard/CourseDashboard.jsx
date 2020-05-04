@@ -23,8 +23,15 @@ import Snackbar from "../Snackbar/Snackbar";
 
 import CourseForm from "./CourseForm";
 
-const TopicsList = ({ topics, onSelected }) => (
-  <Card>
+const TopicsList = ({ topics, onSelected }) => {
+  const data = topics.docs.map((doc, index) => ({
+    ...doc.data(),
+    index,
+    createdAt: doc
+      .get("createdAt")
+      .toDate()
+      .toLocaleString()
+  }));
     <CardHeader color="primary">
       <h4>Listado de Temas</h4>
       <p>{topics.length} Temas(s) encontrados</p>

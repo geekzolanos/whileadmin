@@ -12,7 +12,7 @@ import clsx from "clsx";
 
 function MetaEditor({ classes, topic, submit }) {
   return (
-    <Formik initialValues={topic} onSubmit={submit}>
+    <Formik initialValues={topic.data()} onSubmit={submit}>
       {({ isSubmitting }) => (
         <Form className={classes.h100}>
           <Card className={clsx(classes.h100, classes.my0)}>

@@ -1,37 +1,22 @@
-async function getCoursesByUser(firestore, user) {
+function getCoursesByUser(firestore, user) {
   const userRef = firestore.collection("users").doc(user.uid);
 
-  const snapshot = await firestore
+  return firestore
     .collection("courses")
     .where("teacher", "==", userRef)
     .get();
-
-  const courses = snapshot.docs.map(doc =>
-    Object.assign({ id: doc.id, ref: doc.ref }, doc.data())
-  );
-
-  return courses;
 }
 
-async function getTopicsByCourse(firestore, course) {
-  const snapshot = await firestore
+function getTopicsByCourse(firestore, course) {
+  return firestore
     .collection("topics")
     .where("course", "==", course.ref)
     .orderBy("createdAt", "desc")
     .get();
-
-  return snapshot.docs.map(doc =>
-    Object.assign({ id: doc.id, ref: doc.ref }, doc.data())
-  );
 }
 
 function getStudentsByCourse(course) {
-  return Promise.all(
-    course.students.map(async ref => {
-      const doc = await ref.get();
-      return doc.data();
-    })
-  );
+  return Promise.all(course.data().students.map(ref => ref.get()));
 }
 
 async function getProfileByStudents(functions, course) {

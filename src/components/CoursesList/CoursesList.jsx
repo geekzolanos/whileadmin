@@ -49,7 +49,7 @@ export default function CoursesList({ courses }) {
   const history = useHistory();
 
   const handleSelected = key =>
-    history.push(`${match.path}/${courses[key].id}`);
+    history.push(`${match.path}/${courses.docs[key].id}`);
 
   return (
     courses && (
@@ -57,7 +57,7 @@ export default function CoursesList({ courses }) {
         <CardHeader color="primary">
           <h4 className={classes.cardTitleWhite}>Listado de cursos</h4>
           <p className={classes.cardCategoryWhite}>
-            {courses.length} Curso(s) encontrados
+            {courses.docs.length} Curso(s) encontrados
           </p>
         </CardHeader>
         <CardBody>
@@ -66,11 +66,9 @@ export default function CoursesList({ courses }) {
             tableHeaderColor="primary"
             onSelected={handleSelected}
             tableHead={["Titulo", "Duration (Min)", "Estudiantes"]}
-            tableData={courses.map(c => [
-              c.name,
-              c.duration,
-              c.students.length
-            ])}
+            tableData={courses.docs
+              .map(doc => doc.data())
+              .map(c => [c.name, c.duration, c.students.length])}
           />
         </CardBody>
       </Card>
